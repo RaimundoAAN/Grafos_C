@@ -8,9 +8,7 @@
 #define MAX_UF     64
 #define MAX_CAND   16
 
-/* ------------------------------------------------------------------ */
-/* Leitura do CSV presidencial                                         */
-/* ------------------------------------------------------------------ */
+// Leitura do CSV presidencial
 
 typedef struct {
     int n_uf;
@@ -25,7 +23,8 @@ static void copiar_nome(char* dest, const char* orig) {
     dest[MAX_NOME - 1] = '\0';
 }
 
-/* Formato: UF,Pres_X,Pres_Y,...  (percentuais) */
+// Formato: UF,Pres_X,Pres_Y,...  (percentuais)
+
 static int carregar_votos(const char* arquivo, DadosPres* d) {
     FILE* f = fopen(arquivo, "r");
     if (!f) {
@@ -72,9 +71,7 @@ static int carregar_votos(const char* arquivo, DadosPres* d) {
     return d->n_uf > 0;
 }
 
-/* ------------------------------------------------------------------ */
-/* Construcao dos grafos                                               */
-/* ------------------------------------------------------------------ */
+// Construcao dos grafos                                              
 
 Grafo* construir_grafo_presidencial(const char* arquivo_votos) {
     DadosPres d;
@@ -89,8 +86,7 @@ Grafo* construir_grafo_presidencial(const char* arquivo_votos) {
             return NULL;
         }
     }
-
-    /* Grafo completo: peso = distancia euclidiana entre vetores de votacao */
+    // Grafo completo: peso = distancia euclidiana entre vetores de votacao 
     for (int i = 0; i < d.n_uf; i++) {
         for (int j = i + 1; j < d.n_uf; j++) {
             double soma = 0.0;
@@ -104,7 +100,7 @@ Grafo* construir_grafo_presidencial(const char* arquivo_votos) {
     return g;
 }
 
-/* Formato: UF,Vizinhos   (vizinhos separados por ';') */
+// Formato: UF,Vizinhos   (vizinhos separados por ';')
 Grafo* construir_grafo_territorial(const char* arquivo_votos, const char* arquivo_fronteiras) {
     DadosPres d;
     if (!carregar_votos(arquivo_votos, &d)) return NULL;
@@ -130,14 +126,14 @@ Grafo* construir_grafo_territorial(const char* arquivo_votos, const char* arquiv
 
     char linha[TAM_LINHA];
     char* campos[2];
-    csv_ler_linha(f, linha, sizeof(linha)); /* descarta cabecalho */
+    csv_ler_linha(f, linha, sizeof(linha)); // descarta cabecalho
 
     while (csv_ler_linha(f, linha, sizeof(linha))) {
         if (linha[0] == '\0') continue;
         if (csv_dividir(linha, campos, 2) < 2) continue;
 
         int u = buscar_vertice(g, campos[0]);
-        if (u < 0) continue; /* UF fora do conjunto de dados */
+        if (u < 0) continue; // UF fora do conjunto de dados
 
         for (char* tok = strtok(campos[1], ";, "); tok; tok = strtok(NULL, ";, ")) {
             int v = buscar_vertice(g, tok);
@@ -151,9 +147,9 @@ Grafo* construir_grafo_territorial(const char* arquivo_votos, const char* arquiv
     return g;
 }
 
-/* ------------------------------------------------------------------ */
-/* BFS: propagacao por ondas                                           */
-/* ------------------------------------------------------------------ */
+
+// BFS: propagacao por ondas
+
 
 void busca_largura_propagacao_fronteiras(Grafo* g_terr, int estado_origem) {
     if (!g_terr || estado_origem < 0 || estado_origem >= g_terr->n_vertices) {
@@ -210,9 +206,9 @@ void busca_largura_propagacao_fronteiras(Grafo* g_terr, int estado_origem) {
     free(fila);
 }
 
-/* ------------------------------------------------------------------ */
-/* DFS: componentes conexas do grafo de similaridade filtrado          */
-/* ------------------------------------------------------------------ */
+
+// DFS: componentes conexas do grafo de similaridade filtrado
+
 
 static void dfs_visita(const Grafo* g, int u, float limiar, int* comp, int id) {
     comp[u] = id;
@@ -249,9 +245,9 @@ void busca_profundidade_clusters(Grafo* g_pres, float limiar_corte) {
     free(comp);
 }
 
-/* ------------------------------------------------------------------ */
-/* Kruskal: Arvore Geradora Minima                                     */
-/* ------------------------------------------------------------------ */
+
+// Kruskal: Arvore Geradora Minima
+
 
 typedef struct {
     int u, v;
@@ -269,7 +265,7 @@ static int cmp_aresta(const void* a, const void* b) {
 
 static int uf_find(int* pai, int x) {
     while (pai[x] != x) {
-        pai[x] = pai[pai[x]]; /* compressao de caminho (path halving) */
+        pai[x] = pai[pai[x]]; // compressao de caminho (path halving)
         x = pai[x];
     }
     return x;
@@ -280,7 +276,7 @@ void calcular_mst_eleitoral_kruskal(Grafo* g_pres) {
 
     int n = g_pres->n_vertices;
 
-    /* Coleta cada aresta nao-orientada uma unica vez (u < v) */
+    // Coleta cada aresta nao-orientada uma unica vez (u < v)
     int m = 0;
     for (int u = 0; u < n; u++)
         for (No* p = g_pres->adj[u].inicio; p; p = p->prox)

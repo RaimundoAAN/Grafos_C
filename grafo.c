@@ -4,9 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* ------------------------------------------------------------------ */
-/* Criacao / destruicao                                                */
-/* ------------------------------------------------------------------ */
+
+// Criacao / destruicao
 
 Grafo* criar_grafo(int orientado) {
     Grafo* g = (Grafo*)malloc(sizeof(Grafo));
@@ -46,7 +45,7 @@ void liberar_grafo(Grafo* g) {
     free(g);
 }
 
-/* Dobra a capacidade dos vetores do grafo */
+//Dobra a capacidade dos vetores do grafo
 static int expandir(Grafo* g) {
     int nova = g->capacidade * 2;
 
@@ -66,9 +65,8 @@ static int expandir(Grafo* g) {
     return 1;
 }
 
-/* ------------------------------------------------------------------ */
-/* Vertices e arestas                                                  */
-/* ------------------------------------------------------------------ */
+// Vertices e arestas
+
 
 int adicionar_vertice(Grafo* g, const char* rotulo, int tipo) {
     if (!g || !rotulo) return -1;
@@ -153,9 +151,7 @@ void imprimir_grafo(const Grafo* g) {
     }
 }
 
-/* ------------------------------------------------------------------ */
-/* Utilitarios de CSV                                                  */
-/* ------------------------------------------------------------------ */
+// Utilitarios de CSV
 
 void str_trim(char* s) {
     char* ini = s;
@@ -173,8 +169,7 @@ void str_trim(char* s) {
 int csv_ler_linha(FILE* f, char* buf, size_t tam) {
     if (!fgets(buf, (int)tam, f)) return 0;
     size_t len = strlen(buf);
-    while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r')) buf[--len] = '\0';
-    /* remove BOM UTF-8, se existir */
+    while (len > 0 && (buf[len - 1] == '\n' || buf[len - 1] == '\r')) buf[--len] = '\0';        // remove BOM UTF-8, se existir
     if ((unsigned char)buf[0] == 0xEF && (unsigned char)buf[1] == 0xBB &&
         (unsigned char)buf[2] == 0xBF) {
         memmove(buf, buf + 3, strlen(buf + 3) + 1);
@@ -182,8 +177,8 @@ int csv_ler_linha(FILE* f, char* buf, size_t tam) {
     return 1;
 }
 
-/* Divide a linha in-place por ','. Se houver mais campos que 'max',
-   o ultimo campo recebe o restante da linha. Retorna o numero de campos. */
+// Divide a linha in-place por ',' se houver mais campos que 'max',
+//  o ultimo campo recebe o restante da linha retorna o numero de campos
 int csv_dividir(char* linha, char* campos[], int max) {
     int n = 0;
     char* p = linha;

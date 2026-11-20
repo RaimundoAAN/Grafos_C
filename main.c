@@ -5,8 +5,8 @@
 #include "analise_nacional.h"
 #include "grafo.h"
 
-/* Uso: ./eleicoes [pasta_dados] [limiar_df] [limiar_pres] [UF_origem]
-   Padroes: dados  0.98  10.0  DF */
+// Uso: ./eleicoes [pasta_dados] [limiar_df] [limiar_pres] [UF_origem]
+// Padroes: dados  0.98  10.0  DF
 int main(int argc, char** argv) {
     const char* dir = (argc > 1) ? argv[1] : "dados";
     float limiar_df = (argc > 2) ? (float)atof(argv[2]) : 0.98f;
@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
     int erro = 0;
 
-    /*Eixo 1: Governador do DF*/
+    // Eixo 1: Governador do DF
     printf("##### EIXO 1: GOVERNADOR DO DF #####\n\n");
     Grafo* g_bip = construir_grafo_bipartido_df(csv_df);
     if (g_bip) {
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
         erro = 1;
     }
 
-    /*Eixo 2: Presidente (UFs)*/
+    // Eixo 2: Presidente (UFs)
     printf("\n##### EIXO 2: PRESIDENTE DA REPUBLICA #####\n");
     Grafo* g_terr = construir_grafo_territorial(csv_pres, csv_front);
     Grafo* g_pres = construir_grafo_presidencial(csv_pres);

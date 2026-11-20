@@ -8,12 +8,10 @@
 #define MAX_CAMPOS  64
 #define EPS         1e-4f
 
-/* Medida usada na projecao. Troque por similaridade_jaccard se preferir. */
+// Medida usada na projecao. Troque por similaridade_jaccard se preferir
 #define MEDIDA_SIMILARIDADE similaridade_cosseno
 
-/* ------------------------------------------------------------------ */
-/* Similaridades                                                       */
-/* ------------------------------------------------------------------ */
+// Similaridades
 
 float similaridade_cosseno(const float* a, const float* b, int n) {
     double dot = 0.0, na = 0.0, nb = 0.0;
@@ -26,7 +24,7 @@ float similaridade_cosseno(const float* a, const float* b, int n) {
     return (float)(dot / (sqrt(na) * sqrt(nb)));
 }
 
-/* Jaccard ponderado: soma(min) / soma(max). Distancia de Jaccard = 1 - valor. */
+// Jaccard ponderado: soma(min) / soma(max). Distancia de Jaccard = 1 - valor
 float similaridade_jaccard(const float* a, const float* b, int n) {
     double mn = 0.0, mx = 0.0;
     for (int i = 0; i < n; i++) {
@@ -37,9 +35,7 @@ float similaridade_jaccard(const float* a, const float* b, int n) {
     return (float)(mn / mx);
 }
 
-/* ------------------------------------------------------------------ */
-/* 1) Grafo bipartido                                                  */
-/* ------------------------------------------------------------------ */
+// 1) Grafo bipartido
 
 Grafo* construir_grafo_bipartido_df(const char* arquivo_csv) {
     FILE* f = fopen(arquivo_csv, "r");
@@ -51,7 +47,7 @@ Grafo* construir_grafo_bipartido_df(const char* arquivo_csv) {
     char linha[TAM_LINHA];
     char* campos[MAX_CAMPOS];
 
-    /* Cabecalho: RA,Cand_A,Cand_B,... */
+    // Cabecalho: RA,Cand_A,Cand_B,...
     if (!csv_ler_linha(f, linha, sizeof(linha))) {
         fprintf(stderr, "Erro: arquivo '%s' vazio\n", arquivo_csv);
         fclose(f);
@@ -111,9 +107,7 @@ Grafo* construir_grafo_bipartido_df(const char* arquivo_csv) {
     return g;
 }
 
-/* ------------------------------------------------------------------ */
-/* 2) Candidato dominante por RA                                       */
-/* ------------------------------------------------------------------ */
+// 2) Candidato dominante por RA
 
 void candidatos_dominantes_por_ra(Grafo* g) {
     if (!g) return;
@@ -143,9 +137,7 @@ void candidatos_dominantes_por_ra(Grafo* g) {
     }
 }
 
-/* ------------------------------------------------------------------ */
-/* 3) Projecao monopartida: grafo de similaridade entre RAs            */
-/* ------------------------------------------------------------------ */
+// 3) Projecao monopartida: grafo de similaridade entre RAs
 
 static void preencher_vetor(const Grafo* g, int v, float* vetor) {
     for (int i = 0; i < g->n_vertices; i++) vetor[i] = 0.0f;
@@ -168,7 +160,7 @@ Grafo* gerar_grafo_similaridade_ra(Grafo* g_bipartido, float limiar_similaridade
         return NULL;
     }
 
-    /* Vertices do novo grafo: apenas as RAs */
+    // Vertices do novo grafo: apenas as RAs
     for (int v = 0; v < n; v++) {
         mapa[v] = -1;
         if (g_bipartido->tipos[v] == TIPO_UNIDADE) {
@@ -176,7 +168,7 @@ Grafo* gerar_grafo_similaridade_ra(Grafo* g_bipartido, float limiar_similaridade
         }
     }
 
-    /* Arestas: pares de RAs com similaridade >= limiar */
+    // Arestas: pares de RAs com similaridade >= limiar
     for (int i = 0; i < n; i++) {
         if (mapa[i] < 0) continue;
         preencher_vetor(g_bipartido, i, vi);
