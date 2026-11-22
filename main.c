@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     int erro = 0;
 
     // Eixo 1: Governador do DF
-    printf("##### EIXO 1: GOVERNADOR DO DF #####\n\n");
+    printf("EIXO 1: GOVERNADOR DO DF\n\n");
     Grafo* g_bip = construir_grafo_bipartido_df(csv_df);
     if (g_bip) {
         printf("Grafo bipartido (RAs x Candidatos):\n");
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 
         Grafo* g_sim = gerar_grafo_similaridade_ra(g_bip, limiar_df);
         if (g_sim) {
-            printf("\n=== Grafo de similaridade entre RAs (cosseno >= %.2f) ===\n", limiar_df);
+            printf("\nGrafo de similaridade entre RAs (cosseno >= %.2f)\n", limiar_df);
             imprimir_grafo(g_sim);
             liberar_grafo(g_sim);
         }
@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     }
 
     // Eixo 2: Presidente (UFs)
-    printf("\n##### EIXO 2: PRESIDENTE DA REPUBLICA #####\n");
+    printf("\nEIXO 2: PRESIDENTE DA REPUBLICA\n");
     Grafo* g_terr = construir_grafo_territorial(csv_pres, csv_front);
     Grafo* g_pres = construir_grafo_presidencial(csv_pres);
 
