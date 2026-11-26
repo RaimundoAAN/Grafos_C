@@ -141,11 +141,3 @@ Limites do código: até 64 colunas no CSV do DF e até 64 UFs e 16 candidatos n
 | DFS | O(V + E) |
 | Kruskal | O(E log E) |
 | Projeção de similaridade das RAs | O(V² · V), por causa do vetor de votos de cada par |
-
-## Autores
-
-- Nome 1
-- Nome 2
-- Nome 3
-
-Projeto da disciplina de Estruturas de Dados / Teoria dos Grafos.
